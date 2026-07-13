@@ -115,9 +115,13 @@ export default function App() {
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <header className="app-header">
-        <div>
-          <h1>🛡️ PWNDORA IR Lab — {scenario.scenarioName}</h1>
-          <div className="sub">{scenario.summary}</div>
+        <div className="brand">
+          <div className="logo">🛡️</div>
+          <div>
+            <h1>PWNDORA IR Lab — {scenario.scenarioName}</h1>
+            <div className="sub">{scenario.summary}</div>
+            <div className="team-name">Built by Team Sentinel · BrewingSec CyberDev Summit '26</div>
+          </div>
         </div>
         <span className="badge">DILE-02 · DFIR</span>
       </header>
