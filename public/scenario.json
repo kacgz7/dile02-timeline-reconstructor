@@ -1,0 +1,18 @@
+{
+  "scenarioName": "Operation Silent Ledger",
+  "summary": "A fictional breach of a mid-size fintech. Reconstruct the kill chain from scattered evidence.",
+  "referenceKillChain": [
+    { "id": "e1", "time": "2026-03-01T02:14:00Z", "tCode": "T1566.001", "causedBy": [] },
+    { "id": "e2", "time": "2026-03-01T02:48:00Z", "tCode": "T1078", "causedBy": ["e1"] },
+    { "id": "e3", "time": "2026-03-01T03:30:00Z", "tCode": "T1059.001", "causedBy": ["e2"] },
+    { "id": "e4", "time": "2026-03-01T04:05:00Z", "tCode": "T1003.001", "causedBy": ["e3"] },
+    { "id": "e5", "time": "2026-03-01T05:20:00Z", "tCode": "T1041", "causedBy": ["e4"] }
+  ],
+  "evidenceCards": [
+    { "id": "e1", "title": "Phishing email opened", "detail": "Employee clicked malicious invoice link.", "time": "2026-03-01T02:14:00Z", "suggestedTCode": "T1566.001" },
+    { "id": "e2", "title": "New VPN login", "detail": "Valid creds used from unknown geo.", "time": "2026-03-01T02:48:00Z", "suggestedTCode": "T1078" },
+    { "id": "e3", "title": "PowerShell launched", "detail": "Encoded command executed post-login.", "time": "2026-03-01T03:30:00Z", "suggestedTCode": "T1059.001" },
+    { "id": "e4", "title": "LSASS accessed", "detail": "Credential dumping detected.", "time": "2026-03-01T04:05:00Z", "suggestedTCode": "T1003.001" },
+    { "id": "e5", "title": "Data exfil to C2", "detail": "Outbound beacon to external IP.", "time": "2026-03-01T05:20:00Z", "suggestedTCode": "T1041" }
+  ]
+}
