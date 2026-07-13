@@ -1,45 +1,38 @@
 // score.js — DETERMINISTIC scoring (same answer = same score, always).
-// Pure functions only. No React here. Test this in the console.
+// Pure functions only. No React. Test in console.
 
-// Compare learner placements vs reference kill chain.
-// placement = { id, time, tCode, causedBy: [] }
+// placement = array of { id, time, tCode, causedBy: [ids] } in timeline order
 // reference = scenario.json.referenceKillChain
 export function scoreAttempt(placement, reference) {
   const refById = Object.fromEntries(reference.map((r) => [r.id, r]))
+  const n = reference.length
 
-  let temporalCorrect = 0
-  let tCodeCorrect = 0
-  let causalCorrect = 0
+  let temporal = 0
+  let tCode = 0
+  let causal = 0
 
   for (const p of placement) {
     const ref = refById[p.id]
     if (!ref) continue
 
-    // Temporal: correct iff this card is ordered before later-time cards
+    // TEMPORAL: card must sit before every reference card that is LATER in time
     const refOrder = reference.findIndex((r) => r.id === p.id)
     const laterRefs = reference.slice(refOrder + 1)
-    const placedAfterAllLater = laterRefs.every(
-      (lr) => new Date(p.time) <= new Date(lr.time)
-    )
-    if (placedAfterAllLater) temporalCorrect++
+    if (laterRefs.every((lr) => p.time <= lr.time)) temporal++
 
-    // T-code exact match
-    if (p.tCode === ref.tCode) tCodeCorrect++
+    // T-CODE: exact ATT&CK match
+    if (p.tCode === ref.tCode) tCode++
 
-    // Causal: same set of causedBy ids
-    const same =
-      ref.causedBy.length === p.causedBy.length &&
-      ref.causedBy.every((c) => p.causedBy.includes(c))
-    if (same) causalCorrect++
+    // CAUSAL: same set of causedBy ids (order-independent)
+    const a = [...ref.causedBy].sort()
+    const b = [...(p.causedBy || [])].sort()
+    if (a.length === b.length && a.every((x) => b.includes(x))) causal++
   }
 
-  const n = reference.length
   return {
-    temporal: Math.round((temporalCorrect / n) * 100),
-    tCode: Math.round((tCodeCorrect / n) * 100),
-    causal: Math.round((causalCorrect / n) * 100),
-    overall: Math.round(
-      ((temporalCorrect + tCodeCorrect + causalCorrect) / (n * 3)) * 100
-    ),
+    temporal: Math.round((temporal / n) * 100),
+    tCode: Math.round((tCode / n) * 100),
+    causal: Math.round((causal / n) * 100),
+    overall: Math.round(((temporal + tCode + causal) / (n * 3)) * 100),
   }
 }
